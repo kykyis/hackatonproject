@@ -19,7 +19,7 @@ const config = {
             userScale: {
                 bg: 1,
                 hand: 0.5,
-                sheet: 0.5,
+                sheet: 0.45,
             },
             sheets: {
                 number: 10,

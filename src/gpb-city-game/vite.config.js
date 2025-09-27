@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import {defineConfig} from 'vite';
 
 export default defineConfig({
     server: {
@@ -7,7 +7,8 @@ export default defineConfig({
     },
     build: {
         minify: 'esbuild',
-
+        outDir: '../../nginx/web',
+        emptyOutDir: true,
     },
     esbuild: {
         legalComments: 'eof',

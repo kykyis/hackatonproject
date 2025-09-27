@@ -40,16 +40,19 @@ class GameScene extends Phaser.Scene {
 
 
     preload() {
-        this.loadSvgWithScale('bg', 'src/sprites/bg.svg', 393, 852, 1)
-        this.loadSvgWithScale('hand', 'src/sprites/hand.svg', 432, 567, this.userConfig.userScale.hand)
-        this.loadSvgWithScale('bsheet', 'src/sprites/bsheet.svg', 304, 414, this.userConfig.userScale.sheet)
-        this.loadSvgWithScale('gsheet', 'src/sprites/gsheet.svg', 304, 414, this.userConfig.userScale.sheet)
-        this.loadSvgWithScale('heart', 'src/sprites/heart.svg', 304, 414, 0.3)
-        this.load.font('PixelifySans', 'src/fonts/PixelifySans-Regular.ttf')
+        this.loadSvgWithScale('bg', 'sprites/bg.svg', 393, 852, 1)
+        this.loadSvgWithScale('hand', 'sprites/hand.svg', 432, 567, this.userConfig.userScale.hand)
+        this.loadSvgWithScale('bsheet', 'sprites/bsheet.svg', 304, 414, this.userConfig.userScale.sheet)
+        this.loadSvgWithScale('gsheet', 'sprites/gsheet.svg', 304, 414, this.userConfig.userScale.sheet)
+        this.loadSvgWithScale('heart', 'sprites/heart.svg', 304, 414, 0.3)
+        this.load.font('PixelifySans', 'fonts/PixelifySans-Regular.ttf')
+        this.load.audio('music', 'audio/music.mp3');
 
     }
 
     create() {
+        this.music = this.sound.add('music');
+        this.music.play({loop: true})
         const width = this.scale.width
         const height = this.scale.height
         const xmid = width / 2
@@ -258,6 +261,7 @@ class GameScene extends Phaser.Scene {
     }
 
     restartGame() {
+        this.music.stop()
         this.scene.restart({configFunction: this.createNewConfig})
     }
 
@@ -281,7 +285,7 @@ class GameScene extends Phaser.Scene {
 
     nextLevel() {
         this.removeTimer()
-        
+
         const darkRectangle = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 1, 0.9)
             .setOrigin(0, 0)
             .setDepth(100);
