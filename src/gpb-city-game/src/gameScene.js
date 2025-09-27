@@ -1,106 +1,99 @@
 import Phaser from 'phaser'
-import {Sheet} from './sheet.js'
+import {Sheet} from './game/model/sheet.js'
+import {loadSvgWithScale, randomAngle, randomBoolean} from "./utils.js";
+import {attachCard, moveSheet, pulseCamera} from "./game/animations.js";
+import Timer from "./game/timer.js";
+import LevelEnd from "./game/levelEnd.js";
 
 class GameScene extends Phaser.Scene {
-    userConfig = {
-        userScale: {
-            bg: null,
-            hand: null,
-            sheet: null,
-        },
-        sheets: {
-            number: null,
-        },
-        player: {
-            life: null,
-            score: null
-        }
-    }
-    sheets = []
-    hearts = []
+
+    //abstract
+    userConfig
+    level
+    player
+    timer
     currentSheet
+
+
+    //visible
+    bg
     hand
+    sheets
+    hearts
     scoreText
+    levelEnd
 
-    constructor(name, configFunction) {
+    //xy
+    xtop
+    ytop
+    xmid
+    ymid
+    xbot
+    ybot
+    s
+
+    constructor(name, userConfig) {
         super(name)
-        this.init({configFunction: configFunction})
-    }
-
-    createNewConfig = () => {
+        this.init({userConfig: userConfig})
     }
 
     init(data) {
-        if (data && data.configFunction) {
-            this.createNewConfig = data.configFunction
-            this.userConfig = this.createNewConfig(); // вызываем функцию
+        if (data && data.userConfig) {
+            this.userConfig = data.userConfig
+            this.userConfig.init()
             this.player = this.userConfig.player;
+            this.level = this.userConfig.level
         }
     }
 
-
     preload() {
-        this.loadSvgWithScale('bg', 'sprites/bg.svg', 393, 852, 1)
-        this.loadSvgWithScale('hand', 'sprites/hand.svg', 432, 567, this.userConfig.userScale.hand)
-        this.loadSvgWithScale('bsheet', 'sprites/bsheet.svg', 304, 414, this.userConfig.userScale.sheet)
-        this.loadSvgWithScale('gsheet', 'sprites/gsheet.svg', 304, 414, this.userConfig.userScale.sheet)
-        this.loadSvgWithScale('heart', 'sprites/heart.svg', 304, 414, 0.3)
-        this.load.font('PixelifySans', 'fonts/PixelifySans-Regular.ttf')
+        loadSvgWithScale(this, 'bg', 'sprites/bg.svg', 393, 852, this.userConfig.scale.bg)
+        loadSvgWithScale(this, 'hand', 'sprites/hand.svg', 432, 567, this.userConfig.scale.hand)
+        loadSvgWithScale(this, 'bsheet', 'sprites/bsheet.svg', 304, 414, this.userConfig.scale.sheet)
+        loadSvgWithScale(this, 'gsheet', 'sprites/gsheet.svg', 304, 414, this.userConfig.scale.sheet)
+        loadSvgWithScale(this, 'heart', 'sprites/heart.svg', 304, 414, this.userConfig.scale.heart)
+        this.load.font('mainFont', 'fonts/PixelifySans-Regular.ttf')
         this.load.audio('music', 'audio/music.mp3');
-
     }
 
     create() {
-        this.music = this.sound.add('music');
+        this.ybot = this.scale.height
+        this.xbot = this.scale.width
+        this.ymid = this.ybot / 2
+        this.xmid = this.xbot / 2
+        this.ytop = 0
+        this.xtop = 0
+        this.createBackGround(this.xtop, this.ytop)
+        this.createSheets(this.xmid, this.ymid, this.level.sheetsNumber)
+        this.createHand(this.xmid, this.ybot * 0.8)
+        this.createHearts(this.xbot, this.ytop, this.player.lives)
+        this.createScoreText(this.xtop, this.ytop)
+        this.timer = new Timer(this, this.xmid, this.ybot / 10, this.level.time)
+        this.levelEnd = new LevelEnd(this)
+        this.music = this.sound.add('music')
         this.music.play({loop: true})
-        const width = this.scale.width
-        const height = this.scale.height
-        const xmid = width / 2
-        const ymid = height / 2
-        const ybot = height
-        this.createBackGround()
-        this.createSheets(xmid, ymid, this.userConfig.sheets.number)
-        this.createHearts(width, 0, this.userConfig.player.life)
-        this.createHand(xmid, ybot - (height * 0.2))
-        this.createScoreText(0, 0)
-        this.createTimer(xmid, height / 10, 15)
-        this.listenSwipes()
+        this.enableListeners()
     }
 
-    createTimer(x, y, time) {
-        this.timerText = this.add.text(x, y, `Time: ${time}`, {
-            fontSize: '10em',
-            fill: '#007BFF',
-            fontFamily: 'PixelifySans',
-            backgroundColor: '#fff',
-        }).setOrigin(0.5, 0);
-
-        this.countdown = time;
-
-        this.timer = this.time.addEvent({
-            delay: 1000,
-            callback: this.updateTimer,
-            callbackScope: this,
-            loop: true
-        });
+    createBackGround(x, y) {
+        this.bg = this.add.sprite(x, y, 'bg').setOrigin(0)
     }
 
-    updateTimer() {
-        if (this.timer && this.timerText) {
-            this.countdown--
-            this.timerText.setText(`Time: ${this.countdown}`)
+    createHand(x, y) {
+        this.hand = this.add.sprite(x, y, 'hand')
+    }
 
-            if (this.countdown <= 0) {
-                this.gameOver()
-                this.removeTimer()
-            }
+    createSheets(x, y, sheetNum) {
+        this.sheets = []
+        for (let i = 0; i < sheetNum; i++) {
+            const isGood = randomBoolean(0.5)
+            const sheet = isGood
+                ? new Sheet(this, x, y, 'gsheet', true)
+                : new Sheet(this, x, y, 'bsheet', false)
+            sheet.angle = randomAngle()
+            this.sheets.push(sheet)
         }
-
-    }
-
-    removeTimer() {
-        this.timer.remove()
-        this.timerText.destroy()
+        this.currentSheet = this.sheets.pop()
     }
 
     createHearts(x, y, livesCount) {
@@ -112,103 +105,49 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    createBackGround() {
-        this.add.sprite(0, 0, 'bg').setOrigin(0)
-    }
-
-    createSheets(x, y, sheetNum) {
-        this.sheets = []
-        for (let i = 0; i < sheetNum; i++) {
-            const isGood = this.isGoodSheet()
-            const sheet = isGood
-                ? new Sheet(this, x, y, 'gsheet', true)
-                : new Sheet(this, x, y, 'bsheet', false)
-            sheet.angle = this.randomAngle()
-            this.sheets.push(sheet)
-        }
-        this.currentSheet = this.sheets.pop()
-    }
-
-    listenSwipes() {
-        let startY
-        this.input.on('pointerdown', (pointer) => startY = pointer.y)
-        this.input.on('pointerup', (pointer) => {
-            const endY = pointer.y;
-            const deltaY = endY - startY;
-            if (Math.abs(deltaY) > 30 && this.currentSheet !== undefined) { // 30 пикселей — порог
-                if (deltaY < 0) {
-                    this.swipeUp(this.currentSheet)
-                } else {
-                    this.swipeDown(this.currentSheet)
-                }
-            }
-        })
-    }
-
-    createHand(x, y) {
-        this.hand = this.add.sprite(x, y, 'hand')
-    }
-
     createScoreText(x, y) {
         this.scoreText = this.add.text(x, y, this.userConfig.player.score, {
             fontSize: '10em',
             fill: '#2C52CD',
             backgroundColor: '#fff',
-            fontFamily: 'PixelifySans',
+            fontFamily: 'mainFont',
         }).setOrigin(0, 0);
     }
 
-    isGoodSheet() {
-        return Math.random() >= 0.5
+    enableListeners() {
+        let startY
+        this.input.on('pointerdown', (pointer) => startY = pointer.y)
+        this.input.on('pointerup', (pointer) => {
+            const endY = pointer.y;
+            const deltaY = endY - startY;
+            if (Math.abs(deltaY) > 30 && this.currentSheet) {
+                deltaY > 0
+                    ? this.swipe(this.currentSheet, this.scale.height + this.currentSheet.displayHeight)
+                    : this.swipe(this.currentSheet, 0 - this.currentSheet.displayHeight)
+            }
+        })
     }
 
-    swipeUp(sheet) {
-        this.swipe(sheet, 0 - sheet.displayHeight)
-    }
-
-    swipeDown(sheet) {
-        this.attachCard()
-        this.swipe(sheet, this.scale.height + sheet.displayHeight)
+    disableListeners() {
+        this.input.off('pointerdown')
+        this.input.off('pointerup')
     }
 
     swipe(sheet, y) {
-        this.currentSheet = this.sheets.pop()
-        this.tweens.add({
-            angle: this.randomAngle(),
-            targets: sheet,
-            y: y,
-            duration: 500,
-            ease: 'Power2',
-            onComplete: function () {
-                sheet.destroy(); // удаляем объект после анимации
-            }
-        });
+        if (y > 0) attachCard(this)
+        moveSheet(this, sheet, y)
+        this.sheets.length > 0
+            ? this.currentSheet = this.sheets.pop()
+            : this.currentSheet = null
         this.updateScore(y, sheet.isGood)
-        if (this.currentSheet === undefined) {
+        if (!this.currentSheet && this.hearts.length > 0) {
             this.nextLevel()
         }
     }
 
-    randomAngle() {
-        return ((Math.random() * 2) - 1) * 15
-    }
-
-    attachCard() {
-        this.tweens.add({
-            targets: this.hand,
-            scaleY: 0.8,
-            scaleX: 1.1,
-            angle: -5,
-            duration: 100,
-            ease: 'Sine.easeInOut',
-            yoyo: true,
-            repeat: 0
-        });
-    }
-
     updateScore(direction, good) {
         if ((direction < 0 && !good) || (direction > 0 && good)) {
-            this.updateScoreText();
+            this.scoreText.setText(++this.player.score);
         } else {
             this.loseLife();
         }
@@ -217,62 +156,31 @@ class GameScene extends Phaser.Scene {
     loseLife() {
         this.hearts.pop().destroy()
         if (this.hearts.length === 0) {
-            this.scoreText.destroy()
             this.gameOver()
         }
     }
 
-    updateScoreText() {
-        this.player.score++
-        this.scoreText.setText(this.player.score);
-    }
-
     gameOver() {
-        this.removeTimer()
-        this.cameras.main.shake(500)
-
-        this.add.rectangle(0, 0, this.scale.width, this.scale.height, 1, 0.9)
-            .setOrigin(0, 0)
-            .setDepth(100);
-
-        this.add.text(this.scale.width / 2, this.scale.height / 3, 'Game Over', {
-            fontSize: '10em',
-            fill: '#ff0000',
-            fontFamily: 'PixelifySans'
-        }).setOrigin(0.5).setDepth(101);
-
-        this.add.text(this.scale.width / 2, this.scale.height / 2, `Score: ${this.player.score}`, {
-            fontSize: '10em',
-            fill: '#ffffff',
-            fontFamily: 'PixelifySans'
-        }).setOrigin(0.5).setDepth(101);
-
-        const restartButton = this.add.text(this.scale.width / 2, this.scale.height / 1.5, 'Restart', {
-            fontSize: '10em',
-            fill: '#ffffff',
-            fontFamily: 'PixelifySans',
-            backgroundColor: '#007BFF', // синий фон
-            padding: {x: 20, y: 10}
-        }).setOrigin(0.5).setDepth(101)
-
-        restartButton
-            .setInteractive()
-            .on('pointerdown', () => this.restartGame())
+        pulseCamera(this)
+        this.timer.remove()
+        this.scoreText.destroy()
+        this.levelEnd.create('game over', '#970000', this.player.score, 'заново', () => this.restartGame())
     }
 
     restartGame() {
         this.music.stop()
-        this.scene.restart({configFunction: this.createNewConfig})
+        this.scene.restart({userConfig: this.userConfig})
+    }
+
+    nextLevel() {
+        this.timer.remove()
+        this.levelEnd.create('успех!', '#007BFF', this.player.score, 'продолжить', () => this.continueGame())
     }
 
     continueGame() {
-        const width = this.scale.width
-        const height = this.scale.height
-        const xmid = width / 2
-        const ymid = height / 2
-        this.userConfig.sheets.number += 5
-        this.createSheets(xmid, ymid, this.userConfig.sheets.number)
-        this.createTimer(xmid, height / 10, 15)
+        this.level.levelUp()
+        this.createSheets(this.xmid, this.ymid, this.level.sheetsNumber)
+        this.timer.create()
         this.updatePositions()
     }
 
@@ -282,51 +190,6 @@ class GameScene extends Phaser.Scene {
         this.children.bringToTop(this.timerText)
         this.hearts.forEach(h => this.children.bringToTop(h))
     }
-
-    nextLevel() {
-        this.removeTimer()
-
-        const darkRectangle = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 1, 0.9)
-            .setOrigin(0, 0)
-            .setDepth(100);
-
-        const nextLevelText = this.add.text(this.scale.width / 2, this.scale.height / 3, 'Next Level!', {
-            fontSize: '10em',
-            fill: '#007BFF',
-            fontFamily: 'PixelifySans'
-        }).setOrigin(0.5).setDepth(101);
-
-        const playerScoreText = this.add.text(this.scale.width / 2, this.scale.height / 2, `Score: ${this.player.score}`, {
-            fontSize: '10em',
-            fill: '#ffffff',
-            fontFamily: 'PixelifySans'
-        }).setOrigin(0.5).setDepth(101);
-
-        const continueButtion = this.add.text(this.scale.width / 2, this.scale.height / 1.5, 'Continue', {
-            fontSize: '10em',
-            fill: '#ffffff',
-            fontFamily: 'PixelifySans',
-            backgroundColor: '#007BFF', // синий фон
-            padding: {x: 20, y: 10}
-        }).setOrigin(0.5).setDepth(101)
-
-        continueButtion
-            .setInteractive()
-            .on('pointerdown', () => {
-                darkRectangle.destroy()
-                nextLevelText.destroy()
-                playerScoreText.destroy()
-                continueButtion.destroy()
-                this.continueGame()
-            })
-    }
-
-    loadSvgWithScale(name, url, ow, oh, mult = 1) {
-        const sw = this.scale.width
-        const sh = this.scale.height
-        const svgScale = Math.max(sw / ow, sh / oh)
-        this.load.svg(name, url, {scale: svgScale * mult})
-    }
 }
 
-export {GameScene}
+export default GameScene

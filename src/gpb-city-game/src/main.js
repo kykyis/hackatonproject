@@ -1,11 +1,15 @@
 import Phaser from 'phaser'
 import './css/styles.scss'
-import {GameScene} from "./gameScene.js";
+import GameScene from "./gameScene.js";
+import UserConfig from "./game/userConfig.js";
+import Player from "./game/model/player.js";
+import Scale from "./game/model/scale.js";
+import Level from "./game/model/level.js";
 
 
 const config = {
     type: Phaser.AUTO,
-    backgroundColor: '#efefef',
+    backgroundColor: '#DB9C7F',
     antialias: true,
     roundPixels: true,
     scale: {
@@ -14,22 +18,13 @@ const config = {
         width: window.innerWidth,
         height: window.innerHeight,
     },
-    scene: new GameScene('Game', () => {
+    scene: new GameScene('Game', new UserConfig(() => {
         return {
-            userScale: {
-                bg: 1,
-                hand: 0.5,
-                sheet: 0.45,
-            },
-            sheets: {
-                number: 10,
-            },
-            player: {
-                life: 3,
-                score: 0
-            }
-        };
-    }),
+            player: new Player(3, 0),
+            scale: new Scale(1, 0.5, 0.4, 0.33),
+            level: new Level(15, 3, 1),
+        }
+    })),
 }
 
 const game = new Phaser.Game(config)
