@@ -1,13 +1,16 @@
 class UserConfig {
-    init
-    player
-    scale
-    level
-
-    constructor(initFunction) {
-        this.init = function () {
-            ({player: this.player, scale: this.scale, level: this.level} = initFunction())
-        }
+    constructor({
+                    playerInitLives,
+                    playerInitScore,
+                    levelInitTime,
+                    levelInitSheetsNumber,
+                    levelInitIncrementNumber,
+                }) {
+        this.playerInitLives = playerInitLives
+        this.playerInitScore = playerInitScore
+        this.levelInitTime = levelInitTime
+        this.levelInitSheetsNumber = levelInitSheetsNumber
+        this.levelInitIncrementNumber = levelInitIncrementNumber
     }
 }
 

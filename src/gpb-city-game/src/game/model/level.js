@@ -1,18 +1,18 @@
 class Level {
-    number
+    levelNumber
     sheetsNumber
     sheetsIncrement
     time
 
     constructor(time, sheetsNumber, sheetsIncrement) {
-        this.level = 1
+        this.levelNumber = 1
         this.sheetsNumber = sheetsNumber
         this.time = time
         this.sheetsIncrement = sheetsIncrement
     }
 
     levelUp() {
-        this.level++
+        this.levelNumber++
         this.sheetsNumber += this.sheetsIncrement
     }
 }

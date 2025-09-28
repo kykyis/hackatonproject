@@ -1,4 +1,4 @@
-import {randomAngle} from "../utils.js";
+import {randomAngle} from './utils.js';
 
 const moveSheet = (scene, sheet, y) => {
     scene.tweens.add({
@@ -14,14 +14,32 @@ const moveSheet = (scene, sheet, y) => {
 }
 
 const attachCard = (scene) => {
+    const hand = scene.hand
     scene.tweens.add({
-        targets: scene.hand,
-        scaleY: 0.8,
+        targets: hand,
         scaleX: 1.1,
+        scaleY: 0.8,
+        x: scene.xbot * 0.4,
+        y: scene.ybot,
         angle: -5,
-        duration: 100,
+        duration: 150,
         ease: 'Sine.easeInOut',
-        yoyo: true,
+        repeat: 0,
+        onComplete: () => backHand(scene)
+    });
+}
+
+const backHand = (scene) => {
+    const hand = scene.hand
+    scene.tweens.add({
+        targets: hand,
+        scaleX: hand.originalScaleX,
+        scaleY: hand.originalScaleY,
+        x: hand.originalX,
+        y: hand.originalY,
+        angle: 0,
+        duration: 150,
+        ease: 'Sine.easeInOut',
         repeat: 0
     });
 }
@@ -36,4 +54,11 @@ const pulseCamera = (scene) => {
     });
 }
 
-export {moveSheet, attachCard, pulseCamera}
+const flashTerminalScreen = (scene, color) => {
+    scene.terminal.setTexture(color)
+    scene.time.delayedCall(150, () => {
+        scene.terminal.setTexture('default')
+    })
+}
+
+export {moveSheet, attachCard, pulseCamera, flashTerminalScreen}
