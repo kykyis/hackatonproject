@@ -24,7 +24,7 @@ const initXYCoordinates = (scene) => {
 
 const createUiSelectWithSprite = ({scene, sprite, x, y, text, textMult, textColor, action}) => {
     const container = scene.add.container()
-    const button = scene.add.sprite(x, y, sprite).setOrigin(0.5, 0.5).on('pointerdown', action)
+    const button = scene.add.sprite(x, y, sprite).setOrigin(0.5, 0.5).setInteractive().on('pointerdown', action)
     const textButton = createUiSelect({scene, x, y, text, textMult, textColor, action})
     return container.add([button, textButton])
 }
