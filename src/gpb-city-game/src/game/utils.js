@@ -66,6 +66,27 @@ const initMusic = (scene, name, volume = 1, loop = true) => {
     }
 }
 
+const checkOrientationChange = (game) => {
+    window.addEventListener("orientationchange", () => {
+        setTimeout(() => {
+            const {height, width} = initWindowSize()
+            game.scale.resize(width, height);
+        }, 0);
+    });
+}
+
+const initWindowSize = () => {
+    const h = window.innerHeight
+    const w = window.innerWidth
+    const k = Math.max(h / w, w / h)
+    const isSquare = k < 1.3
+    const height = Math.max(h, w)
+    const width = isSquare
+        ? window.innerHeight * 0.65
+        : Math.min(h, w)
+    return {height, width}
+}
+
 export {
     randomBoolean,
     randomAngle,
@@ -74,5 +95,7 @@ export {
     textParams,
     initMusic,
     createUiSelectWithSprite,
-    createUiSelect
+    createUiSelect,
+    initWindowSize,
+    checkOrientationChange
 }

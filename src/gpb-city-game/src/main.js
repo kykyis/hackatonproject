@@ -4,6 +4,7 @@ import GameScene from "./game/scene/gameScene.js";
 import UserConfig from "./game/userConfig.js";
 import TutorialScene from "./game/scene/tutorialScene.js";
 import MainMenuScene from "./game/scene/mainMenuScene.js";
+import {checkOrientationChange, initWindowSize} from "./game/utils.js";
 
 const userConfig = new UserConfig({
     playerInitLives: 3,
@@ -23,16 +24,17 @@ const userConfig = new UserConfig({
     }
 })
 
+
+const {height, width} = initWindowSize()
 const config = {
     type: Phaser.AUTO,
     backgroundColor: '#7A7A7A',
     antialias: true,
     roundPixels: true,
     scale: {
-        mode: Phaser.Scale.RESIZE,
+        mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        width: window.innerWidth,
-        height: window.innerHeight,
+        height, width
     },
     scene: [
         new MainMenuScene(userConfig.scenes.mainMenuSceneName, userConfig),
@@ -42,4 +44,5 @@ const config = {
 }
 
 const game = new Phaser.Game(config)
+checkOrientationChange(game)
 
