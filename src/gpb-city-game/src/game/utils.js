@@ -66,15 +66,6 @@ const initMusic = (scene, name, volume = 1, loop = true) => {
     }
 }
 
-const checkOrientationChange = (game) => {
-    window.addEventListener("orientationchange", () => {
-        setTimeout(() => {
-            const {height, width} = initWindowSize()
-            game.scale.resize(width, height);
-        }, 50);
-    });
-}
-
 const initWindowSize = () => {
     const h = window.innerHeight
     const w = window.innerWidth
@@ -82,7 +73,7 @@ const initWindowSize = () => {
     const isSquare = k < 1.3
     const height = Math.max(h, w)
     const width = isSquare
-        ? window.innerHeight * 0.65
+        ? h * 0.65
         : Math.min(h, w)
     return {height, width}
 }
@@ -97,5 +88,4 @@ export {
     createUiSelectWithSprite,
     createUiSelect,
     initWindowSize,
-    checkOrientationChange
 }
