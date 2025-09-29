@@ -78,7 +78,7 @@ class GameScene extends Phaser.Scene {
             textColor: '#FFF',
             paddingX: 60,
             paddingY: 50
-        })).setOrigin(0.5, 0.8).setAngle(-15)
+        })).setOrigin(0.5, 0.97).setAngle(-15)
         return terminal
     }
 
