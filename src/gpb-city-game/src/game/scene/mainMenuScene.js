@@ -6,6 +6,7 @@ class MainMenuScene extends Phaser.Scene {
     gameSceneName
     tutorialSceneName
     upgradeSceneName
+    music
 
     constructor(name, userConfig) {
         super(name)

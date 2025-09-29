@@ -60,9 +60,10 @@ const calculateFontSize = (scene) => {
 }
 
 const initMusic = (scene, name, volume = 1, loop = true) => {
-    const music = scene.sound.add(name)
-    music.play({loop: loop, volume: volume})
-    return music
+    if (!scene.music) {
+        scene.music = scene.sound.add(name)
+        scene.music.play({loop: loop, volume: volume})
+    }
 }
 
 export {
