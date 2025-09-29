@@ -71,7 +71,7 @@ const checkOrientationChange = (game) => {
         setTimeout(() => {
             const {height, width} = initWindowSize()
             game.scale.resize(width, height);
-        }, 0);
+        }, 50);
     });
 }
 
