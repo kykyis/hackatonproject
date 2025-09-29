@@ -24,25 +24,29 @@ const initXYCoordinates = (scene) => {
 
 const createUiSelectWithSprite = ({scene, sprite, x, y, text, textMult, textColor, action}) => {
     const container = scene.add.container()
-    const button = scene.add.sprite(x, y, sprite).setOrigin(0.5, 0.5)
-        .setInteractive()
-        .on('pointerdown', action)
+    const button = scene.add.sprite(x, y, sprite).setOrigin(0.5, 0.5).on('pointerdown', action)
     const textButton = createUiSelect({scene, x, y, text, textMult, textColor, action})
     return container.add([button, textButton])
 }
 const createUiSelect = ({scene, x, y, text, textMult, textColor, action}) => {
-    return scene.add
-        .text(x, y, text, textParams(scene, {textColor, textMult}))
-        .setInteractive()
-        .on('pointerdown', action)
-        .setOrigin(0.5, 0.5)
+    return scene.add.text(x, y, text, textParams(scene, {
+        textColor,
+        textMult
+    })).setInteractive().on('pointerdown', action).setOrigin(0.5, 0.5)
 }
 
-const textParams = (scene, {textColor, textMult = 1, bgColor = 'transparent', paddingX = 0, paddingY = 0}) => {
+const textParams = (scene, {
+    textColor = null,
+    textMult = 1,
+    bgColor = 'transparent',
+    paddingX = 0,
+    paddingY = 0,
+    textFont = 'mainFont',
+}) => {
     return {
         fontSize: calculateFontSize(scene) * textMult + 'px',
         fill: textColor,
-        fontFamily: 'mainFont',
+        fontFamily: textFont,
         backgroundColor: bgColor,
         padding: {
             x: paddingX,

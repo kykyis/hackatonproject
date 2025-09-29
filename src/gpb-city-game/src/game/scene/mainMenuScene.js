@@ -1,4 +1,4 @@
-import {createUiSelectWithSprite, initMusic, initXYCoordinates, loadSvgWithScale} from '../utils.js'
+import {createUiSelectWithSprite, initMusic, initXYCoordinates, loadSvgWithScale, textParams} from '../utils.js'
 import Phaser from 'phaser'
 
 class MainMenuScene extends Phaser.Scene {
@@ -7,16 +7,13 @@ class MainMenuScene extends Phaser.Scene {
     tutorialSceneName
     upgradeSceneName
 
-    constructor(name, gameSceneName, tutorialSceneName, upgradeSceneName, userConfig) {
+    constructor(name, userConfig) {
         super(name)
-        this.gameSceneName = gameSceneName;
-        this.tutorialSceneName = tutorialSceneName;
-        this.upgradeSceneName = upgradeSceneName;
         this.userConfig = userConfig
     }
 
     preload() {
-        loadSvgWithScale(this, 'uiSelect', 'sprites/ui/uiSelect.svg', 199, 37, 0.065)
+        loadSvgWithScale(this, 'uiSelect', 'sprites/ui/uiSelect.svg', 199, 37, 0.05)
         loadSvgWithScale(this, 'uiRectangle', 'sprites/ui/uiRectangle.svg', 395, 477, 0.5)
         loadSvgWithScale(this, 'book', 'sprites/background/book.svg', 192, 123, 0.2)
         loadSvgWithScale(this, 'calc', 'sprites/background/calc.svg', 114, 143, 0.2)
@@ -33,54 +30,36 @@ class MainMenuScene extends Phaser.Scene {
         loadSvgWithScale(this, 'gsheet', 'sprites/sheet/gsheet.svg', 214, 292, 0.4)
         loadSvgWithScale(this, 'heart', 'sprites/heart.svg', 37, 35, 0.05)
         loadSvgWithScale(this, 'timer', 'sprites/timer/timer.svg', 82, 82, 0.1)
-        this.load.font('mainFont', 'fonts/SFProText-Semibold.ttf')
+        this.load.font('mainFont', 'fonts/SFProText-Bold.ttf')
+        this.load.font('mainFontBold', 'fonts/SFProText-Heavy.ttf')
         this.load.audio('music', 'audio/music.mp3');
-        this.load.audio('swipe', 'audio/swipe.mp3');
         this.load.audio('goodBeep', 'audio/goodBeep.mp3');
         this.load.audio('badBeep', 'audio/badBeep.mp3');
-
     }
 
     create() {
+        const cfg = this.userConfig
         initXYCoordinates(this)
-        this.music = initMusic(this, 'music', 0.02, true)
-        this.add
-            .rectangle(this.xtop, this.ytop, this.xbot, this.ybot, 0x2C52CD, 0.2)
-            .setOrigin(0, 0)
-        this.add.sprite(this.xmid, this.ymid, 'uiRectangle').setOrigin(0.5)
-        createUiSelectWithSprite({
-            scene: this,
-            sprite: 'uiSelect',
-            x: this.xmid,
-            y: this.ymid * 0.75,
-            text: 'Играть',
-            textColor: '#FFF',
-            action: () => this.startScene(this.gameSceneName)
-        })
-
-        createUiSelectWithSprite({
-            scene: this,
-            sprite: 'uiSelect',
-            x: this.xmid,
-            y: this.ymid,
-            text: 'Как играть?',
-            textColor: '#FFF',
-            action: () => this.startScene(this.gameSceneName)
-        })
-
-        createUiSelectWithSprite({
-            scene: this,
-            sprite: 'uiSelect',
-            x: this.xmid,
-            y: this.ymid * 1.25,
-            text: 'Улучшения',
-            textColor: '#FFF',
-            action: () => this.startScene(this.gameSceneName)
-        })
+        initMusic(this, 'music', 0.02, true)
+        const y = this.ymid
+        this.add.rectangle(this.xtop, this.ytop, this.xbot, this.ybot, 0x2C52CD, 0.2).setOrigin(0, 0)
+        this.add.sprite(this.xmid, y, 'uiRectangle').setOrigin(0.5)
+        this.buttonWithSprite(cfg.scenes.gameSceneName, 'Играть', y * 0.7)
+        this.add.text(this.xmid, y * 0.8, `Всего очков: ${this.userConfig.session.totalScore}`, textParams(this, {textColor: '#007BFF'})).setOrigin(0.5, 0.5)
+        this.buttonWithSprite(cfg.scenes.tutorialSceneName, 'Как играть?', y * 1)
+        this.buttonWithSprite(cfg.scenes.upgradeSceneName, 'Улучшения', y * 1.125)
     }
 
-    startScene(sceneName) {
-        this.scene.start(sceneName)
+    buttonWithSprite(sceneName, text, y) {
+        return createUiSelectWithSprite({
+            scene: this,
+            sprite: 'uiSelect',
+            x: this.xmid,
+            y: y,
+            text: text,
+            textColor: '#FFF',
+            action: () => this.scene.start(sceneName)
+        })
     }
 }
 

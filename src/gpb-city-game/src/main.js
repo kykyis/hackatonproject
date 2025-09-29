@@ -11,11 +11,18 @@ const userConfig = new UserConfig({
     levelInitTime: 15,
     levelInitSheetsNumber: 3,
     levelInitIncrementNumber: 1,
-    scaleSheet: 0.4,
-    scaleHand: 0.5,
-    scaleBg: 1,
-    scaleHeart: 0.33
+    session: {
+        userHand: 'handLVL1',
+        totalScore: 0,
+    },
+    scenes: {
+        mainMenuSceneName: 'Menu',
+        tutorialSceneName: 'Tutorial',
+        gameSceneName: 'Game',
+        upgradeSceneName: 'Upgrade'
+    }
 })
+
 const config = {
     type: Phaser.AUTO,
     backgroundColor: '#7A7A7A',
@@ -28,9 +35,9 @@ const config = {
         height: window.innerHeight,
     },
     scene: [
-        new MainMenuScene('Menu', 'Game', 'Tutorial', 'Upgrade', userConfig),
-        new TutorialScene('Tutorial', userConfig),
-        new GameScene('Game', userConfig)
+        new MainMenuScene(userConfig.scenes.mainMenuSceneName, userConfig),
+        new GameScene(userConfig.scenes.gameSceneName, userConfig),
+        new TutorialScene(userConfig.scenes.tutorialSceneName, userConfig),
     ],
 }
 

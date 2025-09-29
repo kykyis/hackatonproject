@@ -10,6 +10,9 @@ import Hand from "../model/hand.js";
 
 class GameScene extends Phaser.Scene {
 
+    //scenes
+    mainMenuSceneName
+
     //abstract
     userConfig
     level
@@ -27,7 +30,6 @@ class GameScene extends Phaser.Scene {
     levelEnd
 
     //sounds
-    swipeSound
     goodBeepSound
     badBeepSound
 
@@ -39,7 +41,6 @@ class GameScene extends Phaser.Scene {
     create() {
         const cfg = this.userConfig
         initXYCoordinates(this)
-        this.swipeSound = this.sound.add('swipe')
         this.goodBeepSound = this.sound.add('goodBeep')
         this.badBeepSound = this.sound.add('badBeep')
 
@@ -61,11 +62,13 @@ class GameScene extends Phaser.Scene {
     }
 
     createBackGround(x, y) {
+        const cfg = this.userConfig
         const bg = this.add.container()
         const bgColor = this.add.rectangle(x, y, this.xbot, this.ybot, 0xC3D1D7, 1)
         const pen = this.add.sprite(0, y * 0.1, 'pen').setAngle(-60).setOrigin(0.5)
-        const calc = this.add.sprite(this.xtop, y * 0.6, 'calc').setAngle(45).setOrigin(1)
         const book = this.add.sprite(this.xbot * 0.925, y * 0.1, 'book').setAngle(0).setOrigin(0.5)
+        const calc = this.add.sprite(this.xtop, y * 0.6, 'calc').setAngle(45).setOrigin(1)
+            .setInteractive().on('pointerdown', () => this.scene.start(cfg.scenes.mainMenuSceneName))
         return bg.add([bgColor, pen, calc, book])
     }
 
@@ -141,6 +144,7 @@ class GameScene extends Phaser.Scene {
             this.goodBeepSound.play({volume: 0.01})
             flashTerminalScreen(this, 'green')
             this.scoreText.setText(++this.player.score);
+            this.userConfig.session.totalScore++
         } else {
             this.badBeepSound.play({volume: 0.01})
             flashTerminalScreen(this, 'red')
