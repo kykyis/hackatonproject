@@ -66,7 +66,7 @@ const createGradientText = (text, firstColor = '#6088DB', firstStart = 0, second
 }
 
 const calculateFontSize = (scene) => {
-    return scene.scale.width * 0.02 * window.devicePixelRatio
+    return scene.scale.width * 0.05
 }
 
 const initMusic = (scene, name, volume = 1, loop = true) => {
