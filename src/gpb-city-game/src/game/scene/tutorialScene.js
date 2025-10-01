@@ -15,9 +15,9 @@ class TutorialScene extends Phaser.Scene {
 
     preload() {
         loadSvgWithScale(this, 'cardTutorial', 'sprites/card/cardLVL1.svg', 219, 139, 0.1)
-        loadSvgWithScale(this, 'gsheetTutorial', 'sprites/tutorial/gsheet.svg', 158, 137, 0.2)
-        loadSvgWithScale(this, 'bsheetTutorial', 'sprites/tutorial/bsheet.svg', 166, 137, 0.2)
-        loadSvgWithScale(this, 'terminalTutorial', 'sprites/terminal/default.svg', 179, 387, 0.17)
+        loadSvgWithScale(this, 'gsheetTutorial', 'sprites/tutorial/gsheet.svg', 158, 137, 0.17)
+        loadSvgWithScale(this, 'bsheetTutorial', 'sprites/tutorial/bsheet.svg', 166, 137, 0.17)
+        loadSvgWithScale(this, 'terminalTutorial', 'sprites/terminal/default.svg', 179, 387, 0.15)
         loadSvgWithScale(this, 'heartsTutorial', 'sprites/tutorial/hearts.svg', 117, 34, 0.1)
     }
 
@@ -48,7 +48,7 @@ class TutorialScene extends Phaser.Scene {
         }).hide()
         const page3 = new TutorialPage({
             scene, x, y, width,
-            mainText: 'Подозрительные счета',
+            mainText: 'Фальшивые счета',
             image: 'bsheetTutorial',
             text: 'Могут отличаться цветом, содержать опечатки и иную валюту.\nСвайпай их вверх!',
             buttonText: 'Принял',
