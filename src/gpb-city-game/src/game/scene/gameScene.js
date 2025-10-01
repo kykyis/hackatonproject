@@ -1,38 +1,14 @@
 import Phaser from 'phaser'
 import {Sheet} from '../model/sheet.js'
-import {initXYCoordinates, randomAngle, randomBoolean, textParams} from "../utils.js";
-import {attachCard, flashTerminalScreen, moveSheet, pulseCamera} from "../animations.js";
-import Timer from "../model/timer.js";
-import LevelEnd from "../model/levelEnd.js";
-import Player from "../model/player.js";
-import Level from "../model/level.js";
-import Hand from "../model/hand.js";
+import {initXYCoordinates, randomAngle, randomBoolean, textParams} from "../utils.js"
+import {attachCard, flashTerminalScreen, moveSheet, pulseCamera} from "../animations.js"
+import Timer from "../model/timer.js"
+import LevelEnd from "../model/levelEnd.js"
+import Player from "../model/player.js"
+import Level from "../model/level.js"
+import Hand from "../model/hand.js"
 
 class GameScene extends Phaser.Scene {
-
-    //scenes
-    mainMenuSceneName
-
-    //abstract
-    userConfig
-    level
-    player
-
-    //visible
-    bg
-    hand
-    terminal
-    sheets
-    currentSheet
-    hearts
-    timer
-    scoreText
-    levelEnd
-
-    //sounds
-    goodBeepSound
-    badBeepSound
-
     constructor(name, userConfig = null) {
         super(name)
         this.userConfig = userConfig
@@ -40,23 +16,18 @@ class GameScene extends Phaser.Scene {
 
     create() {
         const cfg = this.userConfig
+        const offset = 20
         initXYCoordinates(this)
         this.goodBeepSound = this.sound.add('goodBeep')
         this.badBeepSound = this.sound.add('badBeep')
-
-
-        this.player = new Player(cfg.playerInitLives, cfg.playerInitScore);
+        this.player = new Player(cfg.playerInitLives, cfg.playerInitScore)
         this.level = new Level(cfg.levelInitTime, cfg.levelInitSheetsNumber, cfg.levelInitIncrementNumber)
         this.bg = this.createBackGround(this.xmid, this.ymid)
-
         this.createSheets(this.xmid, this.ymid, this.level.sheetsNumber)
-
         this.terminal = this.createTerminal(this.xmid, this.ymid, this.player.score)
         this.hand = this.createHand(this.xmid, this.ybot)
-
-        this.timer = new Timer(this, this.xbot - 20, this.ytop + 20, this.level.time, () => this.gameOverEvent())
-        this.createHearts(this.xbot - 40 - this.timer.placeHolder.displayWidth, this.ytop + 20 + this.timer.placeHolder.displayHeight / 4, this.player.lives)
-
+        this.timer = new Timer(this, this.xbot - offset, this.ytop + offset, this.level.time, () => this.gameOverEvent())
+        this.createHearts(this.xbot - offset * 2 - this.timer.placeHolder.displayWidth, this.ytop + offset + this.timer.placeHolder.displayHeight / 4, this.player.lives)
         this.levelEnd = new LevelEnd(this)
         this.enableListeners()
     }
@@ -74,7 +45,7 @@ class GameScene extends Phaser.Scene {
 
     createTerminal(x, y, score = 0) {
         const terminal = this.add.sprite(x * 0.45, y * 1.6, 'default').setAngle(-15)
-        this.scoreText = this.add.text(x * 0.45, y * 1.6, score, textParams(this, {
+        this.scoreText = this.add.text(x * 0.45, y * 1.6, score.toString(), textParams(this, {
             textColor: '#FFF',
             paddingX: 60,
             paddingY: 50
@@ -112,8 +83,8 @@ class GameScene extends Phaser.Scene {
         let startY
         this.input.on('pointerdown', (pointer) => startY = pointer.y)
         this.input.on('pointerup', (pointer) => {
-            const endY = pointer.y;
-            const deltaY = endY - startY;
+            const endY = pointer.y
+            const deltaY = endY - startY
             if (Math.abs(deltaY) > 30 && this.currentSheet) {
                 deltaY > 0
                     ? this.swipe(this.currentSheet, this.scale.height + this.currentSheet.displayHeight)
@@ -143,12 +114,12 @@ class GameScene extends Phaser.Scene {
         if ((direction < 0 && !good) || (direction > 0 && good)) {
             this.goodBeepSound.play({volume: 0.01})
             flashTerminalScreen(this, 'green')
-            this.scoreText.setText(++this.player.score);
+            this.scoreText.setText(++this.player.score)
             this.userConfig.session.totalScore++
         } else {
             this.badBeepSound.play({volume: 0.01})
             flashTerminalScreen(this, 'red')
-            this.loseLife();
+            this.loseLife()
         }
     }
 

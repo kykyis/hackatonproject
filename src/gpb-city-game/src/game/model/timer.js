@@ -1,16 +1,6 @@
 import {textParams} from "../utils.js";
 
 class Timer {
-    time
-    timeLeft
-
-    scene
-    counter
-    timerText
-    timerEvent
-    x
-    y
-
     constructor(scene, x, y, time, timerEvent) {
         this.scene = scene
         this.time = time
@@ -18,10 +8,6 @@ class Timer {
         this.x = x
         this.y = y
         this.create()
-    }
-
-    setTime(newTime) {
-        this.time = newTime
     }
 
     create() {
@@ -46,22 +32,17 @@ class Timer {
     }
 
     createPlaceHolder(x, y) {
-        return this.scene.add
-            .sprite(x, y, 'timer')
-            .setOrigin(1, 0)
+        return this.scene.add.sprite(x, y, 'timer').setOrigin(1, 0)
     }
 
     createTimerText(x, y) {
         x -= this.placeHolder.displayWidth / 2
         y += this.placeHolder.displayHeight / 2
-        return this.scene.add
-            .text(x, y, this.timeLeft, textParams(this.scene, {textColor: '#FFF'}))
-            .setOrigin(0.5, 0.5)
+        return this.scene.add.text(x, y, this.timeLeft, textParams(this.scene, {textColor: '#FFF'})).setOrigin(0.5, 0.5)
     }
 
     updateTimer() {
-        this.timeLeft--
-        this.timerText.setText(this.timeLeft)
+        this.timerText.setText(--this.timeLeft)
         if (this.timeLeft <= 0) {
             this.timerEvent()
             this.remove()

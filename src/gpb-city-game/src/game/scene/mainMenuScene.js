@@ -1,4 +1,11 @@
-import {createUiSelectWithSprite, initMusic, initXYCoordinates, loadSvgWithScale, textParams} from '../utils.js'
+import {
+    createGradientText,
+    createUiSelectWithSprite,
+    initMusic,
+    initXYCoordinates,
+    loadSvgWithScale,
+    textParams
+} from '../utils.js'
 import Phaser from 'phaser'
 
 class MainMenuScene extends Phaser.Scene {
@@ -46,7 +53,7 @@ class MainMenuScene extends Phaser.Scene {
         this.add.rectangle(this.xtop, this.ytop, this.xbot, this.ybot, 0x2C52CD, 0.2).setOrigin(0, 0)
         this.add.sprite(this.xmid, y, 'uiRectangle').setOrigin(0.5)
         this.buttonWithSprite(cfg.scenes.gameSceneName, 'Играть', y * 0.7)
-        this.add.text(this.xmid, y * 0.8, `Всего очков: ${this.userConfig.session.totalScore}`, textParams(this, {textColor: '#007BFF'})).setOrigin(0.5, 0.5)
+        createGradientText(this.add.text(this.xmid, y * 0.8, `Всего очков: ${this.userConfig.session.totalScore}`, textParams(this, {})).setOrigin(0.5, 0.5))
         this.buttonWithSprite(cfg.scenes.tutorialSceneName, 'Как играть?', y * 1)
         this.buttonWithSprite(cfg.scenes.upgradeSceneName, 'Улучшения', y * 1.125)
     }

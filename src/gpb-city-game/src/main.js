@@ -24,7 +24,6 @@ const userConfig = new UserConfig({
     }
 })
 
-
 const {height, width} = initWindowSize()
 const config = {
     type: Phaser.AUTO,
@@ -33,7 +32,8 @@ const config = {
     roundPixels: true,
     scale: {
         mode: Phaser.Scale.FIT,
-        height,width,
+        height: height,
+        width: width
     },
     scene: [
         new MainMenuScene(userConfig.scenes.mainMenuSceneName, userConfig),

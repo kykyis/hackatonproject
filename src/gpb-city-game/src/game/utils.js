@@ -36,27 +36,37 @@ const createUiSelect = ({scene, x, y, text, textMult, textColor, action}) => {
 }
 
 const textParams = (scene, {
-    textColor = null,
+    fill = null,
     textMult = 1,
-    bgColor = 'transparent',
+    backgroundColor = 'transparent',
     paddingX = 0,
     paddingY = 0,
-    textFont = 'mainFont',
+    fontFamily = 'mainFont',
+    wordWrap = null,
+    align = 'center'
 }) => {
+
     return {
+        fontFamily, backgroundColor, fill, wordWrap, align,
         fontSize: calculateFontSize(scene) * textMult + 'px',
-        fill: textColor,
-        fontFamily: textFont,
-        backgroundColor: bgColor,
         padding: {
             x: paddingX,
             y: paddingY
-        }
+        },
     }
+
+}
+
+const createGradientText = (text, firstColor = '#6088DB', firstStart = 0, secondColor = '#2C52CD', secondStart = 1) => {
+    const gradient = text.context.createLinearGradient(0, 0, 0, text.height)
+    gradient.addColorStop(firstStart, firstColor)
+    gradient.addColorStop(secondStart, secondColor)
+    text.setFill(gradient)
+    return text
 }
 
 const calculateFontSize = (scene) => {
-    return scene.scale.width * 0.05
+    return scene.scale.width * 0.02 * window.devicePixelRatio
 }
 
 const initMusic = (scene, name, volume = 1, loop = true) => {
@@ -88,4 +98,5 @@ export {
     createUiSelectWithSprite,
     createUiSelect,
     initWindowSize,
+    createGradientText
 }

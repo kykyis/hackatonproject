@@ -1,15 +1,6 @@
-import {createUiSelect, createUiSelectWithSprite, textParams} from "../utils.js";
+import {createGradientText, createUiSelect, createUiSelectWithSprite, textParams} from "../utils.js";
 
 class LevelEnd {
-
-    scene
-    blackout
-    uiRectangle
-    levelEndText
-    scoreText
-    button
-    mainMenuButton
-
     constructor(scene) {
         this.scene = scene
     }
@@ -17,13 +8,13 @@ class LevelEnd {
     create(mainText, mainTextColor, scoreText, buttonText, buttonAction) {
         this.scene.disableListeners()
         const y = this.scene.ymid
-
+        const x = this.scene.xmid
         this.blackout = this.createBlackout(mainTextColor)
-        this.uiRectangle = this.createUiRectangle()
-        this.scoreText = this.createScoreText(scoreText, y * 0.7)
-        this.levelEndText = this.createLevelEndText(mainText, mainTextColor, y * 0.95)
-        this.button = this.createButton(buttonText, buttonAction, y * 1.2)
-        this.mainMenuButton = this.createMainMenuButton(y * 1.3)
+        this.uiRectangle = this.createUiRectangle(x, y)
+        this.scoreText = this.createScoreText(scoreText, x, y * 0.7)
+        this.levelEndText = this.createLevelEndText(mainText, mainTextColor, x, y * 0.95)
+        this.button = this.createButton(buttonText, buttonAction, x, y * 1.2)
+        this.mainMenuButton = this.createMainMenuButton(x, y * 1.3)
     }
 
     remove() {
@@ -37,51 +28,33 @@ class LevelEnd {
     }
 
     createBlackout(color) {
-        const scene = this.scene
-        const x = scene.xbot
-        const y = scene.ybot
-        return scene.add
-            .rectangle(0, 0, x, y, parseInt(color.slice(1), 16), 0.2)
-            .setOrigin(0, 0)
+        return this.scene.add.rectangle(0, 0, this.scene.xbot, this.scene.ybot, parseInt(color.slice(1), 16), 0.2).setOrigin(0, 0)
     }
 
-    createUiRectangle() {
-        const scene = this.scene
-        const x = scene.xmid
-        const y = scene.ymid
-        return scene.add
-            .sprite(x, y, 'uiRectangle')
-            .setOrigin(0.5)
+    createUiRectangle(x, y) {
+        return this.scene.add.sprite(x, y, 'uiRectangle').setOrigin(0.5)
     }
 
-    createScoreText(text, y) {
-        const scene = this.scene
-        const x = scene.xmid
-        const scoreText = scene.add.text(x, y, `Очки: ${text}`, textParams(this.scene, {
-            textMult: 2,
-            textFont: 'mainFontBold'
+    createScoreText(text, x, y) {
+        return createGradientText(this.scene.add.text(x, y, `Очки: ${text}`, textParams(this.scene, {
+            textFont: 'mainFontBold',
+            textMult: 2
+        }))).setOrigin(0.5)
+    }
+
+    createLevelEndText(text, textColor, x, y) {
+        return this.scene.add.text(x, y, text, textParams(this.scene, {
+            fill: textColor,
+            textMult: 1.5
         })).setOrigin(0.5)
-        const gradient = scoreText.context.createLinearGradient(0, 0, 0, scoreText.height)
-        gradient.addColorStop(0, '#6088DB')
-        gradient.addColorStop(1, '#2C52CD')
-        scoreText.setFill(gradient)
-        return scoreText
     }
 
-    createLevelEndText(text, textColor, y) {
-        const scene = this.scene
-        const x = scene.xmid
-        return scene.add.text(x, y, text, textParams(this.scene, {
-            textColor: textColor, textMult: 1.5
-        })).setOrigin(0.5)
-
-    }
-
-    createButton(text, buttonAction, y) {
-        const scene = this.scene
-        const x = scene.xmid
+    createButton(text, buttonAction, x, y) {
         return createUiSelectWithSprite({
-            scene, sprite: 'uiSelect', x, y, text, textColor: '#FFF',
+            scene: this.scene,
+            sprite: 'uiSelect',
+            x, y, text,
+            textColor: '#FFF',
             action: () => {
                 this.remove()
                 buttonAction()
@@ -89,16 +62,17 @@ class LevelEnd {
         })
     }
 
-    createMainMenuButton(y) {
-        const scene = this.scene
-        const x = scene.xmid
+    createMainMenuButton(x, y) {
         return createUiSelect({
-            scene, x, y, text: 'В меню', textColor: '#007BFF',
-            action: () => scene.scene.start(scene.userConfig.scenes.mainMenuSceneName)
+            scene: this.scene,
+            x, y,
+            text: 'В меню',
+            textColor: '#007BFF',
+            action: () => {
+                this.scene.scene.start(this.scene.userConfig.scenes.mainMenuSceneName)
+            }
         })
     }
-
-
 }
 
 export default LevelEnd

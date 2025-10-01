@@ -1,10 +1,4 @@
 class Hand extends Phaser.GameObjects.Sprite {
-    originalX
-    originalY
-    originalScaleX
-    originalScaleY
-    sprite = name
-
     constructor(scene, x, y, name) {
         super(scene, x, y, name)
         this.originalScaleX = this.scaleX
