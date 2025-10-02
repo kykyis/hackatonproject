@@ -21,7 +21,7 @@ class SheetCreator {
     }
 
     static goodOrBadSheet(goodNames, badNames) {
-        const prob = 0.8
+        const prob = 0.85
         let isGood = randomBoolean(prob)
         let sprite, price
         const text = isGood ? getRandomItem(goodNames)[0] : getRandomItem(badNames)[0]
@@ -39,10 +39,7 @@ class SheetCreator {
         }
         return {isGood, text, price, sprite}
     }
-
-
 }
-
 
 class SheetContainer extends Phaser.GameObjects.Container {
     constructor(scene, x, y, {sprite, isGood, text}) {
@@ -68,13 +65,14 @@ const createSheetWithText = (scene, x, y, data) => {
     const quarterHeight = sheet.displayHeight / 4
     const textY = y - quarterHeight * 1.25
     const priceY = y - quarterHeight * 0.5
+    const textColor = data.sprite === 'gsheet' ? '#2C52CD' : '#8B4B0A'
     const text = scene.add.text(x, textY, data.text, textParams(scene, {
-        fill: '#2C52CD',
+        fill: textColor,
         textMult: 1,
         fontFamily: 'additional'
     })).setOrigin(0.5)
     const price = scene.add.text(x, priceY, data.price, textParams(scene, {
-        fill: '#2C52CD',
+        fill: textColor,
         textMult: 1.5,
         fontFamily: 'additional'
     })).setOrigin(0.5)

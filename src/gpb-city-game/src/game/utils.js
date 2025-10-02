@@ -3,7 +3,7 @@ const randomBoolean = (prob = 0.5) => {
 }
 
 const randomAngle = () => {
-    return ((Math.random() * 2) - 1) * 15
+    return ((Math.random() * 2) - 1) * 7.5
 }
 
 const loadSvgWithScale = (scene, name, url, ow, oh, mult = 1) => {

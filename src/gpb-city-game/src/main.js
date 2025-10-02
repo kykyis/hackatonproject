@@ -11,7 +11,7 @@ const userConfig = new UserConfig({
     playerInitLives: 3,
     playerInitScore: 0,
     levelInitTime: 30,
-    levelInitSheetsNumber: 15,
+    levelInitSheetsNumber: 10,
     levelInitIncrementNumber: 3,
     session: {
         userHand: 'handLVL1',

@@ -18,7 +18,7 @@ class TutorialScene extends Phaser.Scene {
         loadSvgWithScale(this, 'gsheetTutorial', 'sprites/tutorial/gsheet.svg', 158, 137, 0.17)
         loadSvgWithScale(this, 'bsheetTutorial', 'sprites/tutorial/bsheet.svg', 166, 137, 0.17)
         loadSvgWithScale(this, 'terminalTutorial', 'sprites/terminal/default.svg', 179, 387, 0.15)
-        loadSvgWithScale(this, 'heartsTutorial', 'sprites/tutorial/hearts.svg', 117, 34, 0.1)
+        loadSvgWithScale(this, 'heartsTutorial', 'sprites/tutorial/hearts.svg', 117, 34, 0.07)
     }
 
     create() {
