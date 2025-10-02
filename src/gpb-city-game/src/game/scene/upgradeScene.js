@@ -1,6 +1,12 @@
 import Phaser from 'phaser'
 import {notEnoughMoney} from "../animations.js";
-import {createGradientText, initXYCoordinates, loadSvgWithScale, textParams} from "../utils.js";
+import {
+    createGradientText,
+    createUiSelectWithSprite,
+    initXYCoordinates,
+    loadSvgWithScale,
+    textParams
+} from "../utils.js";
 
 class UpgradeScene extends Phaser.Scene {
     handUpgrades = {
@@ -119,7 +125,7 @@ class Element {
         this.scene = scene
         this.name = createGradientText(scene.add.text(x, y * 0.55, name, textParams(scene, {wordWrap})).setOrigin(0.5, 0))
         this.sprite = scene.add.sprite(x, y * 0.9, sprite).setOrigin(0.5)
-        const priceY = y * 1.05
+        const priceY = y * 1.15
         this.priceText = this.createPrice(x, priceY, price)
         this.chosen = this.createChosen(x, priceY)
         this.bought = this.createBought(x, priceY)
@@ -167,7 +173,14 @@ class Element {
     }
 
     createPrice(x, y, price) {
-        return this.scene.add.text(x, y, price, textParams(this.scene, {fill: '#007BFF'})).setInteractive().on('pointerdown', () => this.buy()).setOrigin(0.5, 0.5)
+        return createUiSelectWithSprite({
+            x, y,
+            text: price,
+            scene: this.scene,
+            sprite: 'uiSelect',
+            textColor: '#007BFF',
+            action: () => this.buy(),
+        })
     }
 
     createChosen(x, y) {
@@ -175,7 +188,14 @@ class Element {
     }
 
     createBought(x, y) {
-        return this.scene.add.text(x, y, 'Выбрать', textParams(this.scene, {fill: '#007BFF'})).setInteractive().on('pointerdown', () => this.chose()).setOrigin(0.5, 0.5)
+        return createUiSelectWithSprite({
+            x, y,
+            text: 'Выбрать',
+            scene: this.scene,
+            sprite: 'uiSelect',
+            textColor: '#007BFF',
+            action: () => this.chose(),
+        })
     }
 
     buy() {

@@ -4,7 +4,7 @@ const moveSheet = (scene, sheet, y) => {
     scene.tweens.add({
         angle: randomAngle(),
         targets: sheet,
-        y: y,
+        y: y * scene.ybot,
         duration: 500,
         ease: 'Power2',
         onComplete: function () {
@@ -61,7 +61,8 @@ const flashTerminalScreen = (scene, color) => {
     })
 }
 
-const notEnoughMoney = (scene, text) => {
+const notEnoughMoney = (scene, container) => {
+    const text = container.text
     const originalColor = text.style.color
     text.setFill('#ff0000')
     scene.time.delayedCall(100, () => {

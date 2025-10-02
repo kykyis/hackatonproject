@@ -10,14 +10,15 @@ import UpgradeScene from "./game/scene/upgradeScene.js";
 const userConfig = new UserConfig({
     playerInitLives: 3,
     playerInitScore: 0,
-    levelInitTime: 15,
-    levelInitSheetsNumber: 3,
-    levelInitIncrementNumber: 1,
+    levelInitTime: 30,
+    levelInitSheetsNumber: 15,
+    levelInitIncrementNumber: 3,
     session: {
         userHand: 'handLVL1',
         userHands: ['handLVL1'],
         multiplier: 1,
         totalScore: 500,
+        best: 0
     },
     scenes: {
         mainMenuSceneName: 'Menu',
@@ -45,5 +46,6 @@ const config = {
         new UpgradeScene(userConfig.scenes.upgradeSceneName, userConfig),
     ],
 }
+
 
 const game = new Phaser.Game(config)

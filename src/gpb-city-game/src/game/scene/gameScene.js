@@ -1,12 +1,12 @@
 import Phaser from 'phaser'
-import {Sheet} from '../model/sheet.js'
-import {initXYCoordinates, randomAngle, randomBoolean, textParams} from '../utils.js'
-import {attachCard, flashTerminalScreen, moveSheet, pulseCamera} from '../animations.js'
+import SheetCreator from '../model/sheet.js'
 import Timer from '../model/timer.js'
 import LevelEnd from '../model/levelEnd.js'
 import Player from '../model/player.js'
 import Level from '../model/level.js'
 import Hand from '../model/hand.js'
+import {initXYCoordinates, loadCSVData, textParams} from '../utils.js'
+import {attachCard, flashTerminalScreen, moveSheet, pulseCamera} from '../animations.js'
 
 class GameScene extends Phaser.Scene {
     constructor(name, userConfig = null) {
@@ -23,6 +23,8 @@ class GameScene extends Phaser.Scene {
         this.player = new Player(cfg.playerInitLives, cfg.playerInitScore)
         this.level = new Level(cfg.levelInitTime, cfg.levelInitSheetsNumber, cfg.levelInitIncrementNumber)
         this.bg = this.createBackGround(this.xmid, this.ymid)
+        this.goodNames = loadCSVData(this, 'goodNames')
+        this.badNames = loadCSVData(this, 'badNames')
         this.createSheets(this.xmid, this.ymid, this.level.sheetsNumber)
         this.terminal = this.createTerminal(this.xmid, this.ymid, this.player.score)
         this.hand = this.createHand(this.xmid, this.ybot)
@@ -44,12 +46,14 @@ class GameScene extends Phaser.Scene {
     }
 
     createTerminal(x, y, score = 0) {
-        const terminal = this.add.sprite(x * 0.45, y * 1.6, 'default').setAngle(-15)
+        const cfg = this.userConfig
+        const terminal = this.add.sprite(x * 0.45, y * 1.6, 'default').setAngle(-15).setInteractive().on('pointerdown', () => this.scene.start(cfg.scenes.upgradeSceneName))
         this.scoreText = this.add.text(x * 0.45, y * 1.6, score.toString(), textParams(this, {
             textColor: '#FFF',
             paddingX: 60,
             paddingY: 50
         })).setOrigin(0.5, 0.97).setAngle(-15)
+            .setInteractive().on('pointerdown', () => this.scene.start(cfg.scenes.upgradeSceneName))
         return terminal
     }
 
@@ -60,11 +64,7 @@ class GameScene extends Phaser.Scene {
     createSheets(x, y, sheetNum) {
         this.sheets = []
         for (let i = 0; i < sheetNum; i++) {
-            const isGood = randomBoolean(0.5)
-            const sheet = isGood
-                ? new Sheet(this, x, y * 0.8, 'gsheet', true)
-                : new Sheet(this, x, y * 0.8, 'bsheet', false)
-            sheet.angle = randomAngle()
+            const sheet = SheetCreator.createSheet(this, x, y * 0.8, this.goodNames, this.badNames)
             this.sheets.push(sheet)
         }
         this.currentSheet = this.sheets.pop()
@@ -87,8 +87,8 @@ class GameScene extends Phaser.Scene {
             const deltaY = endY - startY
             if (Math.abs(deltaY) > 30 && this.currentSheet) {
                 deltaY > 0
-                    ? this.swipe(this.currentSheet, this.scale.height + this.currentSheet.displayHeight)
-                    : this.swipe(this.currentSheet, 0 - this.currentSheet.displayHeight)
+                    ? this.swipe(this.currentSheet, 1)
+                    : this.swipe(this.currentSheet, -1)
             }
         })
     }
@@ -123,7 +123,6 @@ class GameScene extends Phaser.Scene {
             this.loseLife()
         }
     }
-
 
     loseLife() {
         this.hearts.pop().destroy()

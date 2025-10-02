@@ -35,15 +35,19 @@ class MainMenuScene extends Phaser.Scene {
         loadSvgWithScale(this, 'default', 'sprites/terminal/default.svg', 179, 387, 0.25)
         loadSvgWithScale(this, 'green', 'sprites/terminal/green.svg', 179, 387, 0.25)
         loadSvgWithScale(this, 'red', 'sprites/terminal/red.svg', 179, 387, 0.25)
-        loadSvgWithScale(this, 'bsheet', 'sprites/sheet/bsheets/bsheet1.svg', 213, 292, 0.4)
+        loadSvgWithScale(this, 'bsheet', 'sprites/sheet/bsheet.svg', 213, 292, 0.4)
         loadSvgWithScale(this, 'gsheet', 'sprites/sheet/gsheet.svg', 214, 292, 0.4)
         loadSvgWithScale(this, 'heart', 'sprites/heart.svg', 37, 35, 0.05)
         loadSvgWithScale(this, 'timer', 'sprites/timer/timer.svg', 82, 82, 0.1)
         this.load.font('mainFont', 'fonts/SFProText-Bold.ttf')
         this.load.font('mainFontBold', 'fonts/SFProText-Heavy.ttf')
-        this.load.audio('music', 'audio/music.mp3');
-        this.load.audio('goodBeep', 'audio/goodBeep.mp3');
-        this.load.audio('badBeep', 'audio/badBeep.mp3');
+        this.load.font('additional', 'fonts/IBMPlexMono-SemiBold.ttf')
+        this.load.audio('music', 'audio/music.mp3')
+        this.load.audio('goodBeep', 'audio/goodBeep.mp3')
+        this.load.audio('badBeep', 'audio/badBeep.mp3')
+
+        this.load.text('goodNames', 'csv/goodNames.csv')
+        this.load.text('badNames', 'csv/badNames.csv')
     }
 
     create() {
@@ -54,9 +58,10 @@ class MainMenuScene extends Phaser.Scene {
         this.add.rectangle(this.xtop, this.ytop, this.xbot, this.ybot, 0x2C52CD, 0.2).setOrigin(0, 0)
         this.add.sprite(this.xmid, y, 'uiRectangle').setOrigin(0.5)
         this.buttonWithSprite(cfg.scenes.gameSceneName, 'Играть', y * 0.7)
-        createGradientText(this.add.text(this.xmid, y * 0.8, `Всего очков: ${this.userConfig.session.totalScore}`, textParams(this, {})).setOrigin(0.5, 0.5))
-        this.buttonWithSprite(cfg.scenes.tutorialSceneName, 'Как играть?', y * 1)
-        this.buttonWithSprite(cfg.scenes.upgradeSceneName, 'Улучшения', y * 1.125)
+        createGradientText(this.add.text(this.xmid, y * 0.8, `Баланс очков: ${this.userConfig.session.totalScore}`, textParams(this, {})).setOrigin(0.5, 0.5))
+        createGradientText(this.add.text(this.xmid, y * 0.87, `Рекорд: ${this.userConfig.session.best}`, textParams(this, {})).setOrigin(0.5, 0.5))
+        this.buttonWithSprite(cfg.scenes.tutorialSceneName, 'Как играть?', y * 1.1)
+        this.buttonWithSprite(cfg.scenes.upgradeSceneName, 'Улучшения', y * 1.225)
     }
 
     buttonWithSprite(sceneName, text, y) {

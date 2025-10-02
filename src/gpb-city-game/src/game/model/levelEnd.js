@@ -5,16 +5,17 @@ class LevelEnd {
         this.scene = scene
     }
 
-    create(mainText, mainTextColor, scoreText, buttonText, buttonAction) {
+    create(mainText, mainTextColor, score, buttonText, buttonAction) {
         this.scene.disableListeners()
         const y = this.scene.ymid
         const x = this.scene.xmid
         this.blackout = this.createBlackout(mainTextColor)
         this.uiRectangle = this.createUiRectangle(x, y)
-        this.scoreText = this.createScoreText(scoreText, x, y * 0.7)
+        this.scoreText = this.createScoreText(score, x, y * 0.7)
         this.levelEndText = this.createLevelEndText(mainText, mainTextColor, x, y * 0.95)
         this.button = this.createButton(buttonText, buttonAction, x, y * 1.2)
         this.mainMenuButton = this.createMainMenuButton(x, y * 1.3)
+        this.updateNewBest(score)
     }
 
     remove() {
@@ -72,6 +73,10 @@ class LevelEnd {
                 this.scene.scene.start(this.scene.userConfig.scenes.mainMenuSceneName)
             }
         })
+    }
+
+    updateNewBest(score) {
+        this.scene.userConfig.session.best = Math.max(this.scene.userConfig.session.best, score)
     }
 }
 

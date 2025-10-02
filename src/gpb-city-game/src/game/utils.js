@@ -26,6 +26,7 @@ const createUiSelectWithSprite = ({scene, sprite, x, y, text, textMult, textColo
     const container = scene.add.container()
     const button = scene.add.sprite(x, y, sprite).setOrigin(0.5, 0.5).setInteractive().on('pointerdown', action)
     const textButton = createUiSelect({scene, x, y, text, textMult, textColor, action})
+    container.text = textButton
     return container.add([button, textButton])
 }
 const createUiSelect = ({scene, x, y, text, textMult, textColor, action}) => {
@@ -36,13 +37,13 @@ const createUiSelect = ({scene, x, y, text, textMult, textColor, action}) => {
 }
 
 const textParams = (scene, {
-    fill = null,
+    fill = '#FFF',
     textMult = 1,
     backgroundColor = 'transparent',
     paddingX = 0,
     paddingY = 0,
     fontFamily = 'mainFont',
-    wordWrap = null,
+    wordWrap = {},
     align = 'center'
 }) => {
 
@@ -66,7 +67,8 @@ const createGradientText = (text, firstColor = '#6088DB', firstStart = 0, second
 }
 
 const calculateFontSize = (scene) => {
-    return scene.scale.width * 0.05
+    const hidpi = window.visualViewport.scale !== 0.25 ? 0.75 : 1
+    return scene.scale.width * 0.05 * hidpi
 }
 
 const initMusic = (scene, name, volume = 1, loop = true) => {
@@ -88,6 +90,26 @@ const initWindowSize = () => {
     return {height, width}
 }
 
+const loadCSVData = (scene, name) => {
+    const csvText = scene.cache.text.get(name);
+    const rows = csvText.trim().split('\n').slice(1); // Пропускаем заголовок
+    return rows.map(row => row.split(','));
+}
+
+const getRandomCurrencySymbol = () => {
+    const symbols = ['$', '€', '¥', '£', '₹', '₩', 'R$', 'Fr', 'R']
+    return getRandomItem(symbols)
+}
+
+const getRandomItem = (array) => {
+    return array[Math.floor(Math.random() * array.length)];
+}
+
+const getRandomNumber = (to) => {
+    return Math.floor(Math.random() * to) + 1
+}
+
+
 export {
     randomBoolean,
     randomAngle,
@@ -98,5 +120,9 @@ export {
     createUiSelectWithSprite,
     createUiSelect,
     initWindowSize,
-    createGradientText
+    createGradientText,
+    loadCSVData,
+    getRandomCurrencySymbol,
+    getRandomItem,
+    getRandomNumber,
 }
