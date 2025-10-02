@@ -5,13 +5,31 @@ import LevelEnd from '../model/levelEnd.js'
 import Player from '../model/player.js'
 import Level from '../model/level.js'
 import Hand from '../model/hand.js'
-import {initXYCoordinates, loadCSVData, textParams} from '../utils.js'
+import {initXYCoordinates, loadCSVData, loadSvgWithScale, textParams} from '../utils.js'
 import {attachCard, flashTerminalScreen, moveSheet, pulseCamera} from '../animations.js'
 
 class GameScene extends Phaser.Scene {
     constructor(name, userConfig = null) {
         super(name)
         this.userConfig = userConfig
+    }
+
+    preload() {
+        loadSvgWithScale(this, 'book', 'sprites/background/book.svg', 192, 123, 0.2)
+        loadSvgWithScale(this, 'calc', 'sprites/background/calc.svg', 114, 143, 0.2)
+        loadSvgWithScale(this, 'pen', 'sprites/background/pen.svg', 171, 131, 0.1)
+        loadSvgWithScale(this, 'handLVL1', 'sprites/hand/handLVL1.svg', 296, 424, 0.5)
+        loadSvgWithScale(this, 'handLVL2', 'sprites/hand/handLVL2.svg', 296, 424, 0.5)
+        loadSvgWithScale(this, 'handLVL3', 'sprites/hand/handLVL3.svg', 296, 424, 0.5)
+        loadSvgWithScale(this, 'handLVL4', 'sprites/hand/handLVL4.svg', 296, 424, 0.5)
+        loadSvgWithScale(this, 'handLVL5', 'sprites/hand/handLVL5.svg', 296, 424, 0.5)
+        loadSvgWithScale(this, 'default', 'sprites/terminal/default.svg', 179, 387, 0.25)
+        loadSvgWithScale(this, 'green', 'sprites/terminal/green.svg', 179, 387, 0.25)
+        loadSvgWithScale(this, 'red', 'sprites/terminal/red.svg', 179, 387, 0.25)
+        loadSvgWithScale(this, 'bsheet', 'sprites/sheet/bsheet.svg', 213, 292, 0.9)
+        loadSvgWithScale(this, 'gsheet', 'sprites/sheet/gsheet.svg', 214, 292, 0.9)
+        loadSvgWithScale(this, 'heart', 'sprites/heart.svg', 37, 35, 0.05)
+        loadSvgWithScale(this, 'timer', 'sprites/timer/timer.svg', 82, 82, 0.1)
     }
 
     create() {
