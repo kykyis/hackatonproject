@@ -23,6 +23,7 @@ class MainMenuScene extends Phaser.Scene {
     preload() {
         loadSvgWithScale(this, 'uiSelect', 'sprites/ui/uiSelect.svg', 199, 37, 0.05)
         loadSvgWithScale(this, 'uiRectangle', 'sprites/ui/uiRectangle.svg', 395, 477, 0.5)
+
         loadSvgWithScale(this, 'book', 'sprites/background/book.svg', 192, 123, 0.2)
         loadSvgWithScale(this, 'calc', 'sprites/background/calc.svg', 114, 143, 0.2)
         loadSvgWithScale(this, 'pen', 'sprites/background/pen.svg', 171, 131, 0.1)

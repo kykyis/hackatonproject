@@ -1,12 +1,12 @@
 import Phaser from 'phaser'
 import {Sheet} from '../model/sheet.js'
-import {initXYCoordinates, randomAngle, randomBoolean, textParams} from "../utils.js"
-import {attachCard, flashTerminalScreen, moveSheet, pulseCamera} from "../animations.js"
-import Timer from "../model/timer.js"
-import LevelEnd from "../model/levelEnd.js"
-import Player from "../model/player.js"
-import Level from "../model/level.js"
-import Hand from "../model/hand.js"
+import {initXYCoordinates, randomAngle, randomBoolean, textParams} from '../utils.js'
+import {attachCard, flashTerminalScreen, moveSheet, pulseCamera} from '../animations.js'
+import Timer from '../model/timer.js'
+import LevelEnd from '../model/levelEnd.js'
+import Player from '../model/player.js'
+import Level from '../model/level.js'
+import Hand from '../model/hand.js'
 
 class GameScene extends Phaser.Scene {
     constructor(name, userConfig = null) {
@@ -54,7 +54,7 @@ class GameScene extends Phaser.Scene {
     }
 
     createHand(x, y) {
-        return new Hand(this, x * 1.5, y * 0.8, 'handLVL1')
+        return new Hand(this, x * 1.5, y * 0.8, this.userConfig.session.userHand)
     }
 
     createSheets(x, y, sheetNum) {
@@ -114,8 +114,9 @@ class GameScene extends Phaser.Scene {
         if ((direction < 0 && !good) || (direction > 0 && good)) {
             this.goodBeepSound.play({volume: 0.01})
             flashTerminalScreen(this, 'green')
-            this.scoreText.setText(++this.player.score)
-            this.userConfig.session.totalScore++
+            this.player.score += this.userConfig.session.multiplier
+            this.userConfig.session.totalScore += this.userConfig.session.multiplier
+            this.scoreText.setText((this.player.score).toString())
         } else {
             this.badBeepSound.play({volume: 0.01})
             flashTerminalScreen(this, 'red')

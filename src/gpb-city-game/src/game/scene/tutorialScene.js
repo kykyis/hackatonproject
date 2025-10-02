@@ -4,8 +4,8 @@ import {
     initXYCoordinates,
     loadSvgWithScale,
     textParams
-} from "../utils.js";
-import Phaser from "phaser";
+} from '../utils.js'
+import Phaser from 'phaser'
 
 class TutorialScene extends Phaser.Scene {
     constructor(name, userConfig) {
@@ -70,7 +70,6 @@ class TutorialScene extends Phaser.Scene {
             buttonText: 'Дальше',
             nextPage: page2
         })
-        // const page1 = new TutorialPage(this, main)
     }
 
 }

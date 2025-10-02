@@ -1,4 +1,4 @@
-import {randomAngle} from './utils.js';
+import {randomAngle} from './utils.js'
 
 const moveSheet = (scene, sheet, y) => {
     scene.tweens.add({
@@ -8,7 +8,7 @@ const moveSheet = (scene, sheet, y) => {
         duration: 500,
         ease: 'Power2',
         onComplete: function () {
-            sheet.destroy(); // удаляем объект после анимации
+            sheet.destroy()
         }
     });
 }
@@ -61,4 +61,12 @@ const flashTerminalScreen = (scene, color) => {
     })
 }
 
-export {moveSheet, attachCard, pulseCamera, flashTerminalScreen}
+const notEnoughMoney = (scene, text) => {
+    const originalColor = text.style.color
+    text.setFill('#ff0000')
+    scene.time.delayedCall(100, () => {
+        text.setFill(originalColor)
+    });
+}
+
+export {moveSheet, attachCard, pulseCamera, flashTerminalScreen, notEnoughMoney}

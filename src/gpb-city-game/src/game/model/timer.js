@@ -1,4 +1,4 @@
-import {textParams} from "../utils.js";
+import {textParams} from '../utils.js'
 
 class Timer {
     constructor(scene, x, y, time, timerEvent) {

@@ -5,6 +5,7 @@ import UserConfig from "./game/userConfig.js";
 import TutorialScene from "./game/scene/tutorialScene.js";
 import MainMenuScene from "./game/scene/mainMenuScene.js";
 import {initWindowSize} from "./game/utils.js";
+import UpgradeScene from "./game/scene/upgradeScene.js";
 
 const userConfig = new UserConfig({
     playerInitLives: 3,
@@ -14,7 +15,9 @@ const userConfig = new UserConfig({
     levelInitIncrementNumber: 1,
     session: {
         userHand: 'handLVL1',
-        totalScore: 0,
+        userHands: ['handLVL1'],
+        multiplier: 1,
+        totalScore: 500,
     },
     scenes: {
         mainMenuSceneName: 'Menu',
@@ -39,6 +42,7 @@ const config = {
         new MainMenuScene(userConfig.scenes.mainMenuSceneName, userConfig),
         new GameScene(userConfig.scenes.gameSceneName, userConfig),
         new TutorialScene(userConfig.scenes.tutorialSceneName, userConfig),
+        new UpgradeScene(userConfig.scenes.upgradeSceneName, userConfig),
     ],
 }
 
